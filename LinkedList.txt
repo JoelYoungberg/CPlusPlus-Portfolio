@@ -1,0 +1,279 @@
+//Joel R. Youngberg
+//8 Mar 2014
+//CIS 17B Hwk3 Linked List
+
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+//Spec File for Numberlist Class
+#ifndef NUMBERLIST_H
+#define NUMBERLIST_H
+
+class NumberList{
+private:
+	//Decl. Struct for list
+	struct ListNode{
+	int id;//value in this node
+	string name;
+	struct ListNode *next;//For pointing to next node
+    };
+
+	ListNode *head;//List head pointer
+
+public:
+	//Constructor
+	NumberList()
+	{head = NULL;}
+	//Destructor
+	//~NumberList();
+
+	//Linked list operation prototypes
+	void appendNode(int,string);
+	void insertNode(int);
+	void deleteNode(int);
+	void searchList(int);
+	void displayList() const;
+};
+#endif
+
+//////////////////////////////////////////////Implementation
+
+#include "NumberList.h"
+
+
+
+void NumberList::appendNode(int num, string nam){
+
+	ListNode *newNode;//For pointing to new node
+	ListNode *nodePtr;//For moving through list
+
+	//Allocating new node and storing num there.
+	newNode = new ListNode;
+	newNode->id = num;
+	newNode->name = nam;
+	newNode->next = NULL;
+
+	//If no new nodes in the list-make new node the first node
+	if (!head)
+		head = newNode;
+	else{//Otherwise insert new node at the end of the list
+
+		//Initialize nodePtr to head of list
+		nodePtr = head;
+		//Find last node in the list
+		while (nodePtr->next)
+			nodePtr = nodePtr->next;
+		//Insert newNode as the last node
+		nodePtr->next = newNode;
+	}
+}
+
+void NumberList::displayList() const{
+	ListNode *nodePtr; // To move through the list
+
+	// Position nodePtr at the head of the list.
+	nodePtr = head;
+
+	// While nodePtr points to a node, traverse the list.
+	while (nodePtr){
+		//Display the value in this node.
+		cout << nodePtr->id << " " << nodePtr->name << endl;
+
+		// Move to the next node.
+		nodePtr = nodePtr->next;
+	}
+}
+
+void NumberList::insertNode(int num){
+	ListNode *newNode;//New node
+	ListNode *nodePtr;//For traversing list
+	ListNode *previousNode = NULL;//The previous node
+
+	//Allocate new node and store num in it
+	newNode = new ListNode;
+	newNode->id = num;
+
+	// If there are no nodes in the list
+	// Make newNode the first node
+	if (!head){
+		head = newNode;
+		newNode->next = NULL;
+	}
+	else // Otherwise, insert newNode
+	{
+		//Position nodePtr at the head of list
+		nodePtr = head;
+
+		// Initialize previousNode to NULL.
+		previousNode = NULL;
+
+		//Skip all nodes which have a value less than num.
+		while (nodePtr != NULL && nodePtr->id < num){
+			previousNode = nodePtr;
+			nodePtr = nodePtr->next;
+		}
+
+		//If the new node is to be the 1st in the list,
+		//Insert it befor all other nodes.
+		if (previousNode == NULL){
+			head = newNode;
+			newNode->next = nodePtr;
+		}
+		else //Otherwise insert after the previous node.
+		{
+			previousNode->next = newNode;
+			newNode->next = nodePtr;
+		}
+	}
+}
+
+void NumberList::deleteNode(int num)
+ {
+	 ListNode *nodePtr; // To traverse the list
+	 ListNode *previousNode; // To point to the previous node
+	
+		 // If the list is empty, do nothing.
+		 if (!head)
+		 return;
+	
+		 // Determine if the first node is the one.
+		 if (head->id == num)
+		 {
+		 nodePtr = head->next;
+		 delete head;
+		 head = nodePtr;
+		 }
+	 else
+		 {
+		 // Initialize nodePtr to head of list
+			 nodePtr = head;
+		
+			 // Skip all nodes whose value member is
+			 // not equal to num.
+			 while (nodePtr != NULL && nodePtr->id != num)
+			 {
+			 previousNode = nodePtr;
+			 nodePtr = nodePtr->next;
+			 }
+		
+			 // If nodePtr is not at the end of the list,
+			 // link the previous node to the node after
+			 // nodePtr, then delete nodePtr.
+			 if (nodePtr)
+			 {
+			 previousNode->next = nodePtr->next;
+			 delete nodePtr;
+			 }
+		}
+	}
+
+void NumberList::searchList(int num){
+	ListNode *nodePtr; // To traverse the list
+	ListNode *previousNode; // To point to the previous node
+
+	// If the list is empty, do nothing.
+	if (!head){
+		cout << "The list is empty... enter something to search for first" << endl;
+		return;
+	}
+
+	// Determine if the first node is the one.
+	if (head->id == num)
+	{
+		nodePtr = head->next;
+		cout << head->id;
+		cout << " " << head->name << endl;
+		head = nodePtr;
+		
+	}
+	else
+	{
+		// Initialize nodePtr to head of list
+		nodePtr = head;
+
+		// Skip all nodes whose value member is
+		// not equal to num.
+		while (nodePtr != NULL && nodePtr->id != num)
+		{
+			previousNode = nodePtr;
+			nodePtr = nodePtr->next;
+		}
+
+		// If nodePtr is not at the end of the list,
+		// link the previous node to the node after
+		// nodePtr, then delete nodePtr.
+		if (nodePtr)
+		{
+			previousNode->next = nodePtr->next;
+			cout << endl;
+			cout << nodePtr->id;
+			cout << " " << nodePtr->name << endl;
+		}
+	}
+}
+
+
+/////////////main/executable//////////////////////////////
+
+
+#include "NumberList.h"
+
+
+int main(){
+
+	//Define NumberList object
+	NumberList list;
+	int idNum = 0;
+	string pNam;
+	int idDel = 0;
+	int idSrch = 0;
+	char resp;
+
+	//Appending values to the list
+	while (idNum >= 0){
+		cout << endl;
+		cout << "Please enter an ID number and a name for the Employee: " << endl;
+		cout << "(Separate the number and name with a space)" << endl;
+	    cout << "(Enter -1 to Continue/Quit) " << endl;
+		cin >> idNum;
+		if (idNum < 0)
+			break;
+		cin >> pNam;
+		
+		list.appendNode(idNum,pNam);
+	}
+
+	//Insert node in the middle of list
+	//list.insertNode(10);
+	//list.insertNode(50);
+
+
+	system("cls");
+	//Displaying list
+	list.displayList();
+	cout << endl;
+	cout << "Enter the ID number of the employee you wish to delete:" << endl;
+	cin >> idDel;
+
+	//Deleting Chosen Node
+	list.deleteNode(idDel);
+
+	//Displaying list
+	list.displayList();
+	cout << endl;
+
+	cout << "Would You like to search for a record?" << endl;
+	cin >> resp;
+
+	if (resp == 'y' || resp == 'Y'){
+		//Searching list
+		system("cls");
+		cout << "Enter the ID number of the employee you wish to search for:" << endl;
+		cin >> idSrch;
+		list.searchList(idSrch);
+	}
+		return 0;
+}
