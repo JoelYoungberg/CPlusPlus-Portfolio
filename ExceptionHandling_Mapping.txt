@@ -1,0 +1,134 @@
+/*
+*Project: Homework 7 Exception Handling
+*Author: Joel Youngberg
+*Date Created: 24 Mar 2014
+*Title: Eye Color Program
+*Purpose: Program that throws
+an exception if a non-valid
+eye color is entered.
+*/
+
+//HeaderGuards
+#ifndef SLOT_H
+#define SLOT_H
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class InvalidColor{};
+
+enum color {NONE, BLUE, LIGHT_BLUE, GRAY, GREEN, AMBER, HAZEL, BROWN, DARK_BROWN};
+
+class Person{
+
+private:
+	color eyeColor;
+
+public:
+	Person();
+	~Person();
+	void setColor(color aColor);
+	void displayPerson() const;
+
+};
+
+
+
+#endif // SLOT_H
+
+////////////////////////Person.cpp///////////////////////////////////////////////////////
+#include "Person.h"
+
+Person::Person(){
+	eyeColor = NONE;
+}
+Person::~Person(){}
+
+void Person::setColor(color aColor){
+	eyeColor = aColor;
+	if (aColor == NONE)
+		throw InvalidColor{};
+}
+
+void Person::displayPerson()const{
+
+	switch (eyeColor){
+	case BLUE: cout << "Eye Color: " << "blue.\n\n";
+		break;
+	case LIGHT_BLUE: cout << "Eye Color: " << "light blue.\n\n";
+		break;
+	case GRAY: cout << "Eye Color: " << "gray.\n\n";
+		break;
+	case GREEN: cout << "Eye Color: " << "green.\n\n";
+		break;
+	case AMBER: cout << "Eye Color: " << "amber.\n\n";
+		break;
+	case HAZEL: cout << "Eye Color: " << "hazel.\n\n";
+		break;
+	case BROWN: cout << "Eye Color: " << "brown.\n\n";
+		break;
+	case DARK_BROWN: cout << "Eye Color: " << "dark brown.\n\n";
+		break;
+	
+	}//End Switch
+
+}//End displayPerson function
+
+//Main///////////////Driver Program///////////////////////////////////////////////////////////////
+
+
+//Including all applicable libraries
+
+#include "Person.h"
+#include <map>
+
+
+
+int main()
+{
+	//Declaring Variables
+	string eye;
+	color _eyeColor;
+
+	//Declare Person Object
+	Person eyeMan;
+
+	cout << "Please enter the eye color of a person: " << endl;
+	cout << "Valid entries are: BLUE, LIGHT_BLUE, GRAY, GREEN," << endl;
+		cout << "AMBER, HAZEL, BROWN, DARK_BROWN:" << endl;
+
+	//Mapping string values to enum values...
+	//Thanks to Alex Allain for his turorial on maps: http://www.cprogramming.com/tutorial/stl/stlmap.html
+	//And Luchian Grigore for his comment here: http://stackoverflow.com/questions/10514626/c-enum-and-using-them-to-input-from-user
+	map<string,color> m;
+	m["BLUE"] = BLUE;
+	m["LIGHT_BLUE"] = LIGHT_BLUE;
+	m["GRAY"] = GRAY;
+	m["GREEN"] = GREEN;
+	m["AMBER"] = AMBER;
+	m["HAZEL"] = HAZEL;
+	m["BROWN"] = BROWN;
+	m["DARK_BROWN"] = DARK_BROWN;
+
+	cin >> eye;
+	_eyeColor = m[eye];
+
+
+	try{//Testing for invalid color...
+		//Passing eyeColor value to class
+		eyeMan.setColor(_eyeColor);
+	}
+	
+	catch (InvalidColor){
+		cout << "Error: An invalid eye color was entered...\n";
+	}
+
+	eyeMan.displayPerson();
+
+	
+
+	//Exit Program///////////////////////////////////////////////////////////////////////////////
+	return 0;
+}
+
